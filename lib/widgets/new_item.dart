@@ -3,6 +3,7 @@ import 'package:shopping_list_app/data/categories.dart';
 
 class NewItem extends StatefulWidget {
   const NewItem({super.key});
+
   @override
   State<NewItem> createState() {
     return _NewItemState();
@@ -10,6 +11,12 @@ class NewItem extends StatefulWidget {
 }
 
 class _NewItemState extends State<NewItem> {
+  final _formKey = GlobalKey<FormState>();
+
+  void setItem() {
+    _formKey.currentState!.validate();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,6 +26,7 @@ class _NewItemState extends State<NewItem> {
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: Form(
+          key: _formKey,
           child: Column(
             children: [
               TextFormField(
@@ -41,6 +49,7 @@ class _NewItemState extends State<NewItem> {
                 children: [
                   Expanded(
                     child: TextFormField(
+                      keyboardType: TextInputType.number,
                       initialValue: '1',
                       decoration: const InputDecoration(
                         label: Text('Quantity'),
@@ -87,11 +96,13 @@ class _NewItemState extends State<NewItem> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      _formKey.currentState!.reset();
+                    },
                     child: const Text('Reset'),
                   ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: setItem,
                     child: const Text('Add item'),
                   )
                 ],
