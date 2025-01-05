@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -15,6 +16,7 @@ class GroceryList extends StatefulWidget {
 
 class _GroceryListState extends State<GroceryList> {
   List<GroceryItem> _groceryItems = [];
+  var _isLoading = true;
   @override
   void initState() {
     super.initState();
@@ -44,6 +46,7 @@ class _GroceryListState extends State<GroceryList> {
     }
     setState(() {
       _groceryItems = _loadedItems;
+      _isLoading = false;
     });
   }
 
@@ -72,6 +75,12 @@ class _GroceryListState extends State<GroceryList> {
         'You got no items yet',
       ),
     );
+
+    if (_isLoading == true) {
+      content = const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
 
     if (_groceryItems.isNotEmpty) {
       content = ListView.builder(
