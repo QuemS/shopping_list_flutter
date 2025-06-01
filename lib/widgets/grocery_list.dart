@@ -35,13 +35,13 @@ class _GroceryListState extends State<GroceryList> {
       });
     }
     final Map<String, dynamic> listData = json.decode(response.body);
-    final List<GroceryItem> _loadedItems = [];
+    final List<GroceryItem> loadedItems = [];
     for (final item in listData.entries) {
       final category = categories.entries
           .firstWhere(
               (catItem) => catItem.value.title == item.value['category'])
           .value;
-      _loadedItems.add(
+      loadedItems.add(
         GroceryItem(
           id: item.key,
           name: item.value['name'],
@@ -51,7 +51,7 @@ class _GroceryListState extends State<GroceryList> {
       );
     }
     setState(() {
-      _groceryItems = _loadedItems;
+      _groceryItems = loadedItems;
       _isLoading = false;
     });
   }
@@ -68,10 +68,20 @@ class _GroceryListState extends State<GroceryList> {
     });
   }
 
-  void _removeItem(item) {
+  void _removeItem(GroceryItem item) async {
+    final index = _groceryItems.indexOf(item);
     setState(() {
       _groceryItems.remove(item);
     });
+    final url = Uri.https(
+        'flutter-prep-669e8-default-rtdb.europe-west1.firebasedatabase.app',
+        'shopping-list/${item.id}.json');
+    final response = await http.delete(url);
+    if (response.statusCode >= 400) {
+      setState(() {
+        _groceryItems.insert(index, item);
+      });
+    }
   }
 
   @override
@@ -115,7 +125,6 @@ class _GroceryListState extends State<GroceryList> {
         child: Text(_error!),
       );
     }
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Groceries'),

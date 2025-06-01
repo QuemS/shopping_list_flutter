@@ -21,7 +21,7 @@ class _NewItemState extends State<NewItem> {
   var _enteredName = '';
   var _enteredQuantity = 1;
   var _selectedCategory = categories[Categories.vegetables]!;
-  var _isSending = false;
+  var isSending = false;
 
   void setItem() async {
     if (_formKey.currentState!.validate()) {
@@ -46,7 +46,8 @@ class _NewItemState extends State<NewItem> {
 
       final Map<String, dynamic> resData = json.decode(response.body);
 
-      if (!context.mounted) return;
+      if (!mounted) return;
+
       Navigator.of(context).pop(GroceryItem(
         id: resData['name'],
         name: _enteredName,
@@ -150,7 +151,7 @@ class _NewItemState extends State<NewItem> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: _isSending
+                    onPressed: isSending
                         ? null
                         : () {
                             _formKey.currentState!.reset();
@@ -158,8 +159,8 @@ class _NewItemState extends State<NewItem> {
                     child: const Text('Reset'),
                   ),
                   ElevatedButton(
-                    onPressed: _isSending ? null : setItem,
-                    child: _isSending
+                    onPressed: isSending ? null : setItem,
+                    child: isSending
                         ? const SizedBox(
                             height: 16,
                             width: 16,
